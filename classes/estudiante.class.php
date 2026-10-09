@@ -1,4 +1,4 @@
-<?php 
+<?php
 require("classes/conn.class.php");
 require("classes/validaciones.inc.php");
 class Estudiante{
@@ -6,17 +6,16 @@ class Estudiante{
     public $fechanacimiento;
     public $estadoregistroestudiante;
     public $idgenero;
-    public $conexion;
-    public $validacion;
+    public $conexion; //objeto de conexion
+    public $validacion; //objeto de validacion
 
     public function __construct(){
         $this->conexion = new DB();
         $this->validacion = new Validaciones();
-
     }
 
-    public function setIdEstudiante($idestudiante){
-        $this->idestudiante = intval($idestudiante);
+    public function setIdeEstudiante($idestudiante){
+        $this->idestudiante = intVal($idestudiante);
     }
 
     public function getIdEstudiante(){
@@ -35,26 +34,26 @@ class Estudiante{
         $this->idgenero = $idgenero;
     }
 
-    public function getIdEstudiante(){
+    public function getIdGenero(){
         return $this->idgenero;
     }
 
-    //metodo para obtener el registro de un restudiante 
+    //Metodo para obtener el registro de un unico estudiante
     public function obtenerEstudiante(int $idestudiante){
-        $this->setIdEstudiante($idestudiante);
-        if($this->idestudiante >0){
-            $resultado = $this->conexion('SELECT * FROM estudiante where id_estudiante=' .$this->idestudiante.';');
-            $array = array("mensaje"=>"Registros encontrados","valores"=>$resultado->fetch());
+        $this->setIdeEstudiante($idestudiante);
+        if($this->idestudiante > 0){
+            $resultado = $this->conexion->run('SELECT * FROM estudiante WHERE id_estudiante='.$this->idestudiante.';');
+            $array = array("mensaje"=>"Registros encontrados","Valores"=>$resultado->fetch());
             return $array;
         }else{
-            return array("mensaje"=>"No se puede ejecutar la consulta, el parametro is es incorrecto","Valores"=>"");
+            return array("mensaje"=>"No se puede ejecutar la consulta, el parámetro ID es incorrecto","Valores"=>"");
         }
     }
 
-    //metodo para obtener los registros de todos los estudiantes 
+    //Metodo para obtener los registros de todos los estudiantes
     public function obtenerEstudiantes(){
-        $resultado = $this->conexion('SELECT * FROM estudiante;');
-        $array =array("mensaje"=>"Registros encontrados","Valores"=>$resultado->fetch());
+        $resultado = $this->conexion->run('SELECT * FROM estudiante;');
+        $array = array("mensaje"=>"Registros encontrados","Valores"=>$resultado->fetch());
         return $array;
     }
 
@@ -65,7 +64,7 @@ class Estudiante{
                 "fecha_nac" => $fechanacimiento,
                 "id_genero" => $idgenero
             );
-            $resultado = $this->conexion('INSERT INTO estudiante(fecha_nacimiento_estudiante,id_genero)VALUES(:fecha_nac,:id_genero);',$parametros);
+            $resultado = $this->conexion->run('INSERT INTO estudiante(fecha_nacimiento_estudiante,id_genero)VALUES(:fecha_nac,:id_genero);',$parametros);
             if($this->conexion->n > 0 and $this->conexion->id > 0){
                 $resultado = $this->obtenerEstudiante($this->conexion->id);
                 $array = array("mensaje"=>"Registros encontrados","Valores"=>$resultado["Valores"]);
@@ -77,6 +76,6 @@ class Estudiante{
             return array("mensaje"=>"Parametros enviados vacios","Valores"=>"");
         }
     }
-
 }
+
 ?>
